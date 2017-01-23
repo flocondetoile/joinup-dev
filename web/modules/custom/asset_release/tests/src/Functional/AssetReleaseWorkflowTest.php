@@ -91,25 +91,6 @@ class AssetReleaseWorkflowTest extends JoinupWorkflowTestBase {
   }
 
   /**
-   * Creates a user with roles.
-   *
-   * @param array $roles
-   *    An array of roles to initialize the user with.
-   *
-   * @return \Drupal\Core\Session\AccountInterface
-   *    The created user object.
-   */
-  public function createUserWithRoles(array $roles = []) {
-    $user = $this->createUser();
-    foreach ($roles as $role) {
-      $user->addRole($role);
-    }
-    $user->save();
-
-    return $user;
-  }
-
-  /**
    * {@inheritdoc}
    */
   protected function getEntityType() {
