@@ -84,6 +84,9 @@
         {% endif %}
 
         <div class="section section--content-middle {{ is_propose_collection ? 'mdl-cell mdl-cell--12-col form__cell' }}">
+          {% if is_front %}
+            {% include directory ~ '/templates/mock/tiles.html.twig' %}
+          {% endif %}
           {{ page.content }}
         </div>
 
