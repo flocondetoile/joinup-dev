@@ -8,8 +8,8 @@ dependencies:
     - joinup_core
     - search_api
     - text
-id: collections
-label: Collections
+id: solutions
+label: Solutions
 module: views
 description: ''
 tag: ''
@@ -442,7 +442,7 @@ display:
           value:
             min: ''
             max: ''
-            value: collection
+            value: solution
           group: 1
           exposed: false
           expose:
@@ -474,7 +474,7 @@ display:
             group_items: {  }
           plugin_id: search_api_string
       sorts: {  }
-      title: Collections
+      title: Solutions
       header: {  }
       footer: {  }
       empty: {  }
@@ -497,7 +497,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: collections
+      path: solutions
     cache_metadata:
       max-age: -1
       contexts:
