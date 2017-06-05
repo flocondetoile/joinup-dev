@@ -12,58 +12,71 @@ node:event:pre_moderated:
     validated:
       label: Validated
       published: true
-    needs_update:
-      label: Needs update
     proposed:
       label: Proposed
     deletion_request:
       label: 'Deletion request'
+    __delete__:
+      label: Delete
   transitions:
+    # Common transitions to draft.
     save_as_draft:
       label: 'Save as draft'
-      from: [__new__]
+      from: [__new__, draft]
       to: draft
-    propose:
-      label: 'Propose'
-      from: [__new__, draft]
-      to: proposed
-    validate:
-      label: Publish
-      from: [__new__, draft]
-      to: validated
-    update_published:
-      label: Update
-      from: [validated]
-      to: validated
+    # Group content author specific transitions to draft.
+    return_to_draft:
+      label: 'Save as draft'
+      from: [proposed, validated]
+      to: draft
+    # Group facilitator specific transitions to draft.
     request_changes:
       label: 'Request changes'
       from: [validated]
-      to: proposed
-    request_deletion:
-      label: 'Request deletion'
-      from: [validated]
-      to: deletion_request
-    reject_deletion:
-      label: 'Reject deletion'
-      from: [deletion_request]
-      to: validated
-    report:
-      label: Report
-      from: [validated]
-      to: needs_update
-    approve_report:
-      label: 'Approve report'
-      from: [needs_update]
+      to: draft
+    reject_changes:
+      label: 'Reject changes'
+      from: [proposed]
+      to: draft
+    # In pre moderated, only the group content author can propose.
+    propose:
+      label: 'Propose'
+      from: [__new__, draft, validated]
       to: proposed
     update_proposed:
       label: 'Update proposed'
       from: [proposed]
       to: proposed
+    # Facilitator transitions directly to validated.
+    validate:
+      label: Publish
+      from: [__new__, draft]
+      to: validated
+    # Only moderators can access this action.
+    update_published:
+      label: Update
+      from: [validated]
+      to: validated
+    # Group content author transitions to request deletion.
+    request_deletion:
+      label: 'Request deletion'
+      from: [draft, validated]
+      to: deletion_request
+    # Group facilitator transitions to reject the deletion request.
+    reject_deletion:
+      label: 'Reject deletion'
+      from: [deletion_request]
+      to: validated
     # Approve the proposed version and publish it.
     approve_proposed:
       label: 'Approve proposed'
       from: [proposed]
       to: validated
+    # The __delete__ is used to determine access to delete.
+    delete:
+      label: 'Delete'
+      from: [draft, validated, deletion_request]
+      to: __delete__
 # The workflow of the event entity for a post moderated parent.
 node:event:post_moderated:
   id: post_moderated
@@ -78,14 +91,14 @@ node:event:post_moderated:
     validated:
       label: Validated
       published: true
-    needs_update:
-      label: Needs update
     proposed:
       label: Proposed
+    __delete__:
+      label: Delete
   transitions:
     save_as_draft:
       label: 'Save as draft'
-      from: [__new__]
+      from: [__new__, draft]
       to: draft
     validate:
       label: Publish
@@ -98,14 +111,6 @@ node:event:post_moderated:
     request_changes:
       label: 'Request changes'
       from: [validated]
-      to: proposed
-    report:
-      label: Report
-      from: [validated]
-      to: needs_update
-    approve_report:
-      label: 'Approve report'
-      from: [needs_update]
       to: proposed
     update_proposed:
       label: 'Update proposed'

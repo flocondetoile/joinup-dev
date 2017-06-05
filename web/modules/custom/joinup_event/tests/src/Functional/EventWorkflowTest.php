@@ -67,12 +67,10 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
           'view' => [
             'userOwner',
             'userModerator',
-            'userOgFacilitator',
           ],
           'update' => [
             'userOwner',
             'userModerator',
-            'userOgFacilitator',
           ],
           'delete' => [
             'userModerator',
@@ -255,7 +253,9 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
         'draft' => [
           'userAuthenticated' => [],
           'userOwner' => [
+            'save_as_draft',
             'propose',
+            'request_deletion',
           ],
           'userOgMember' => [],
           'userOgFacilitator' => [
@@ -268,44 +268,33 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
         'proposed' => [
           'userAuthenticated' => [],
           'userOwner' => [
+            'return_to_draft',
             'update_proposed',
           ],
           'userOgMember' => [],
           'userOgFacilitator' => [
-            'update_proposed',
+            'reject_changes',
             'approve_proposed',
           ],
           'userModerator' => [
-            'update_proposed',
+            'reject_changes',
             'approve_proposed',
           ],
         ],
         'validated' => [
           'userAuthenticated' => [],
           'userOwner' => [
+            'return_to_draft',
+            'propose',
             'request_deletion',
           ],
           'userOgMember' => [],
           'userOgFacilitator' => [
-            'report',
-            'update_published',
             'request_changes',
           ],
           'userModerator' => [
-            'report',
             'update_published',
             'request_changes',
-          ],
-        ],
-        'needs_update' => [
-          'userAuthenticated' => [],
-          'userOwner' => [],
-          'userOgMember' => [],
-          'userOgFacilitator' => [
-            'approve_report',
-          ],
-          'userModerator' => [
-            'approve_report',
           ],
         ],
         'deletion_request' => [
@@ -325,15 +314,12 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
         'draft' => [
           'userAuthenticated' => [],
           'userOwner' => [
+            'save_as_draft',
             'validate',
           ],
           'userOgMember' => [],
-          'userOgFacilitator' => [
-            'validate',
-          ],
-          'userModerator' => [
-            'validate',
-          ],
+          'userOgFacilitator' => [],
+          'userModerator' => [],
         ],
         'proposed' => [
           'userAuthenticated' => [],
@@ -342,7 +328,6 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
           ],
           'userOgMember' => [],
           'userOgFacilitator' => [
-            'update_proposed',
             'approve_proposed',
           ],
           'userModerator' => [
@@ -357,25 +342,11 @@ class EventWorkflowTest extends NodeWorkflowTestBase {
           ],
           'userOgMember' => [],
           'userOgFacilitator' => [
-            'report',
-            'update_published',
             'request_changes',
           ],
           'userModerator' => [
-            'report',
             'update_published',
             'request_changes',
-          ],
-        ],
-        'needs_update' => [
-          'userAuthenticated' => [],
-          'userOwner' => [],
-          'userOgMember' => [],
-          'userOgFacilitator' => [
-            'approve_report',
-          ],
-          'userModerator' => [
-            'approve_report',
           ],
         ],
       ],

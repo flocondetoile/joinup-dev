@@ -33,6 +33,23 @@ transitions:
         - rdf_entity-collection-facilitator
         - rdf_entity-solution-facilitator
         - moderator
+      draft:
+        - owner
+    return_to_draft:
+      proposed:
+        - owner
+      validated:
+        - owner
+    request_changes:
+      validated:
+        - rdf_entity-collection-facilitator
+        - rdf_entity-solution-facilitator
+        - moderator
+    reject_changes:
+      proposed:
+        - rdf_entity-collection-facilitator
+        - rdf_entity-solution-facilitator
+        - moderator
     propose:
       __new__:
         - authenticated
@@ -40,6 +57,8 @@ transitions:
       draft:
         - owner
       propose:
+        - owner
+      validated:
         - owner
     validate:
       __new__:
@@ -52,15 +71,10 @@ transitions:
         - moderator
     update_published:
       validated:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
-    request_changes:
-      validated:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
         - moderator
     request_deletion:
+      draft:
+        - owner
       validated:
         - owner
     reject_deletion:
@@ -68,22 +82,9 @@ transitions:
         - rdf_entity-collection-facilitator
         - rdf_entity-solution-facilitator
         - moderator
-    report:
-      validated:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
-    approve_report:
-      needs_update:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
     update_proposed:
       proposed:
         - owner
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
     approve_proposed:
       proposed:
         - rdf_entity-collection-facilitator
@@ -97,6 +98,8 @@ transitions:
         - rdf_entity-collection-facilitator
         - rdf_entity-solution-facilitator
         - moderator
+      draft:
+        - owner
     validate:
       __new__:
         - authenticated
@@ -106,38 +109,23 @@ transitions:
         - moderator
       draft:
         - owner
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
     update_published:
       validated:
         - owner
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
         - moderator
     request_changes:
       validated:
         - rdf_entity-collection-facilitator
         - rdf_entity-solution-facilitator
         - moderator
-    report:
-      validated:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
-    approve_report:
-      needs_update:
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
-        - moderator
     update_proposed:
       proposed:
         - owner
-        - rdf_entity-collection-facilitator
-        - rdf_entity-solution-facilitator
         - moderator
     approve_proposed:
       proposed:
         - rdf_entity-collection-facilitator
         - rdf_entity-solution-facilitator
         - moderator
+
+# @todo: Build the deletion array.

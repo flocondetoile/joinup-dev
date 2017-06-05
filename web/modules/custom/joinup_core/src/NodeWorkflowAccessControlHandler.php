@@ -6,6 +6,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\node\NodeInterface;
 use Drupal\og\Entity\OgMembership;
 use Drupal\og\MembershipManagerInterface;
 use Drupal\og\Og;
@@ -186,7 +187,14 @@ class NodeWorkflowAccessControlHandler {
       return AccessResult::forbiddenIf($account->isAnonymous() || $entity->getOwnerId() !== $account->id());
     }
 
-    $membership = Og::getMembership($parent, $account);
+    // If the entity is saved as draft and there is no published version yet
+    // then only the owner can access it.
+    $is_owner = $entity->getOwnerId() === $account->id();
+    if ($entity->{self::STATE_FIELD}->first()->value === 'draft' && !$this->hasPublishedVersion($entity)) {
+      return $is_owner ? AccessResult::allowed() : AccessResult::forbidden();
+    }
+
+    $membership = $this->membershipManager->getMembership($parent, $account);
     if (empty($membership)) {
       return AccessResult::neutral();
     }
@@ -196,6 +204,7 @@ class NodeWorkflowAccessControlHandler {
       return AccessResult::allowed();
     }
 
+    // Returning neutral will allow global permissions to persist.
     return AccessResult::neutral();
   }
 
@@ -223,14 +232,20 @@ class NodeWorkflowAccessControlHandler {
    *   The access result.
    */
   protected function entityDeleteAccess(EntityInterface $entity, AccountInterface $account) {
-    $entity_type = ($entity->getEntityTypeId() === 'node') ? 'content' : 'rdf_entity';
-    if ($account->hasPermission("delete any {$entity->bundle()} {$entity_type}")) {
+    if ($account->hasPermission("administer nodes")) {
       return AccessResult::allowed();
+    }
+
+    // If the entity is in draft without any published version, it is accessible
+    // only by the owner, thus deletable only by the owner.
+    $is_owner = $entity->getOwnerId() === $account->id();
+    if ($entity->{self::STATE_FIELD}->first()->value === 'draft' && !$this->hasPublishedVersion($entity)) {
+      return $is_owner ? AccessResult::allowed() : AccessResult::forbidden();
     }
 
     $parent = $this->getEntityParent($entity);
     $membership = Og::getMembership($parent, $account);
-    if (!empty($membership) && $membership->hasPermission("delete any {$entity->bundle()} {$entity_type}")) {
+    if (!empty($membership) && $membership->hasPermission("delete any {$entity->bundle()} content")) {
       return AccessResult::allowed();
     }
 
@@ -244,7 +259,7 @@ class NodeWorkflowAccessControlHandler {
     // Access is denied because if neutral is returned, the default entity
     // access control handler will allow it.
     if ($moderation == self::PRE_MODERATION) {
-      return AccessResult::forbiddenIf(!$account->hasPermission("delete any {$entity->bundle()} {$entity_type}"));
+      return AccessResult::forbiddenIf(!$account->hasPermission("delete any {$entity->bundle()} content"));
     }
 
     return AccessResult::neutral();
@@ -281,6 +296,24 @@ class NodeWorkflowAccessControlHandler {
   protected function getEntityWorkflow(EntityInterface $entity) {
     $workflow = $entity->field_state->first()->getWorkflow();
     return $workflow->getId();
+  }
+
+  /**
+   * Checks if the passed entity has a published version.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *    The node entity.
+   *
+   * @return bool
+   *    Whether the entity has a published version.
+   */
+  protected function hasPublishedVersion(EntityInterface $entity) {
+    if ($entity->isDefaultRevision()) {
+      return $entity->isPublished();
+    }
+
+    $loaded = $this->entityTypeManager->getStorage('node')->load($entity->id());
+    return $loaded->isPublished();
   }
 
 }
