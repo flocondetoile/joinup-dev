@@ -1,26 +1,4 @@
-transition_notifications:
-  solution:
-    validate:
-      rdf_entity-solution-administrator:
-        - rdf_entity_solution_validate
-    request_deletion:
-      moderator:
-        - rdf_entity_solution_request_del
-  asset_release:
-    validate:
-      rdf_entity-solution-facilitator:
-        - rdf_entity_release_update
-    update_published:
-      rdf_entity-solution-facilitator:
-        - rdf_entity_release_update
 delete_notifications:
-  rdf_entity:
-    solution:
-      rdf_entity-solution-administrator:
-        - rdf_entity_solution_delete
-    asset_distribution:
-      rdf_entity-solution-administrator:
-        - rdf_entity_distribution_delete
   node:
     custom_page:
       rdf_entity-collection-facilitator:

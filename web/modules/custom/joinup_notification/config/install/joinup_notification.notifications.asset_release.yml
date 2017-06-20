@@ -1,0 +1,14 @@
+workflow_group: asset_release
+update:
+  validate:
+    og_roles:
+      rdf_entity-solution-administrator:
+        - rdf_entity_release_update
+  update_published:
+    og_roles:
+      rdf_entity-solution-facilitator:
+        - rdf_entity_release_update
+delete:
+  og_roles:
+    rdf_entity-solution-administrator:
+      - rdf_entity_solution_delete

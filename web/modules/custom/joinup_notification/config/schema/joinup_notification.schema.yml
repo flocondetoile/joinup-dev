@@ -15,6 +15,11 @@
 #     ]
 #   ]
 # ]
+# @endcode
+# Note that the workflow_group_id i.e. the workflow group name should be the same as
+# the bundle of the entity that it applies to. E.g., the workflow_group id for
+# solutions should be 'solution'.
+#
 # The delete_notifications array is not depending on states so it is has the
 # same approach but uses the entity type id instead of the workflow group and
 # the bundle instead of the transition.
@@ -28,26 +33,54 @@
 #     ]
 #   ]
 # ]
+# @endcode
 #
 # There can be multiple message ids and the roles are either site-wide or og
 # for both cases.
-#
-# Define a type for all the notification settings.
-joinup_notification.settings.default:
-  type: sequence
-  label: 'Workflow group'
-  sequence:
-    type: sequence
-    label: 'Transition'
-    sequence:
+joinup_notification.notifications.*:
+  type: config_object
+  mapping:
+    workflow_group:
+      label: 'Workflow group'
+      type: string
+    update:
       type: sequence
-      label: 'Roles'
       sequence:
-        type: sequence
-        label: 'Message ID'
-        sequence:
-          type: string
+        label: 'Transition notifications'
+        type: joinup_notification.group_type_settings
+    delete:
+      label: 'Delete notifications'
+      type: joinup_notification.group_type_settings
 
+joinup_notification.group_type_settings:
+  label: 'Settings for roles, og_roles and the owner'
+  type: mapping
+  mapping:
+    roles:
+      label: 'Roles'
+      type: sequence
+      sequence:
+        label: 'Role id'
+        type: joinup_notification.notification_settings
+    og_roles:
+      label: 'Og roles'
+      type: sequence
+      sequence:
+        label: 'Role id'
+        type: joinup_notification.notification_settings
+    owner:
+      label: 'Notifications to the owner'
+      type: joinup_notification.notification_settings
+
+joinup_notification.notification_settings:
+  label: 'Default notification settings'
+  type: sequence
+  sequence:
+    label: 'Message Id'
+    type: string
+
+# @deprecated.
+# @todo: To be removed along with the schema.
 joinup_notification.settings:
   type: config_object
   label: 'Notification settings'
